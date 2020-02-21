@@ -16,21 +16,21 @@ class LalaMemoTest {
     void memoBuilderTest() {
         Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
         System.out.println(now);
-        LalaMemo lalaMemo = LalaMemo.builder()
+        Clipping clipping = Clipping.builder()
                 .id(1L)
-                .text("text")
+                .textMessage("textMessage")
                 .check(false)
                 .createDt(now)
                 .modifiedDt(now)
                 .build();
-        assertNotNull(lalaMemo);
+        assertNotNull(clipping);
     }
 
     @Test
     @DisplayName("메모 생성자 테스트")
     void memoConstructorTest() {
         Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
-        LalaMemo lalaMemo = new LalaMemo(1L, "text", false, now, now);
-        assertNotNull(lalaMemo);
+        Clipping clipping = new Clipping(1L, "textMessage", "clippedUrl", false, 1, now, now);
+        assertNotNull(clipping);
     }
 }
