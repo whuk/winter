@@ -19,7 +19,7 @@ class LalaMemoTest {
         Clipping clipping = Clipping.builder()
                 .id(1L)
                 .textMessage("textMessage")
-                .check(false)
+                .checked(false)
                 .createDt(now)
                 .modifiedDt(now)
                 .build();

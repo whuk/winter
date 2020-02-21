@@ -3,10 +3,11 @@ package we.lala.winter.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
-@Table(name = "lala_memo")
+@Table(name = "clipping")
 @Getter
 @Setter
 @Builder
@@ -15,21 +16,20 @@ import java.util.Date;
 public class Clipping {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(name = "text_message")
     private String textMessage;
 
-
     @Column(name = "clipped_url")
     private String clippedUrl;
 
-    @Column(name = "check")
-    private boolean check;
+    @Column(name = "checked")
+    private Boolean checked;
 
-    @Column(name = "order")
-    private int order;
+    @Column(name = "numbering")
+    private Integer numbering;
 
     @Column(name = "created_dt")
     private Date createDt;
