@@ -9,7 +9,7 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class LalaMemoTest {
+class ClippingTest {
 
     @Test
     @DisplayName("메모 빌더 테스트")
