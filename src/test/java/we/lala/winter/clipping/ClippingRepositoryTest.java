@@ -10,7 +10,9 @@ import we.lala.winter.domain.Clipping;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
@@ -43,5 +45,28 @@ class ClippingRepositoryTest {
 
         // Then
         assertNotNull(savedClipping);
+    }
+
+    @Test
+    @DisplayName("Clipping 저장 후 조회 테스트")
+    void givenClipping_whenSaveClippingAndSelect_thenReturnClipping() {
+        // Given
+        Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        Clipping clipping = Clipping.builder()
+                .textMessage("textMessage")
+                .checked(true)
+                .createDt(now)
+                .modifiedDt(now)
+                .clippedUrl("http://naver.com")
+                .numbering(1)
+                .build();
+
+        // When
+        Clipping savedClipping = clippingRepository.save(clipping);
+        List<Clipping> clippingList = clippingRepository.findAll();
+
+        // Then
+        System.out.println(clippingList.toString());
+        assertNotEquals(0, clippingList.size());
     }
 }
