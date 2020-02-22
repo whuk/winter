@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 class ClippingRepositoryTest {
@@ -68,5 +68,30 @@ class ClippingRepositoryTest {
         // Then
         System.out.println(clippingList.toString());
         assertNotEquals(0, clippingList.size());
+    }
+
+    @Test
+    @DisplayName("Clipping 저장 후 삭제 테스트")
+    void givenClipping_whenSaveClippingAndDelete_thenDeleteClipping() {
+        // Given
+        Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        Clipping clipping = Clipping.builder()
+                .textMessage("textMessage")
+                .checked(true)
+                .createDt(now)
+                .modifiedDt(now)
+                .clippedUrl("http://naver.com")
+                .numbering(1)
+                .build();
+
+        // When
+        Clipping savedClipping = clippingRepository.save(clipping);
+        Long savedClippingId = savedClipping.getId();
+        System.out.println(savedClipping.toString());
+        clippingRepository.delete(savedClipping);
+
+        // Then
+        Optional<Clipping> clippingById = clippingRepository.findById(savedClippingId);
+        assertFalse(clippingById.isPresent());
     }
 }
