@@ -1,10 +1,11 @@
-package we.lala.winter.clipping;
+package we.lala.winter.clipping.respository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import we.lala.winter.clipping.repository.ClippingRepository;
 import we.lala.winter.domain.Clipping;
 
 import java.time.LocalDateTime;

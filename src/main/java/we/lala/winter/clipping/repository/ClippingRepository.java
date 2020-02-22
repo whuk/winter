@@ -1,4 +1,4 @@
-package we.lala.winter.clipping;
+package we.lala.winter.clipping.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import we.lala.winter.domain.Clipping;

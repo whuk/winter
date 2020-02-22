@@ -3,7 +3,6 @@ package we.lala.winter.domain;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -14,6 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode(of = "id")
 public class Clipping {
 
     @Id
