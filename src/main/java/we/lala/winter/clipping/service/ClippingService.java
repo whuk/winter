@@ -2,7 +2,11 @@ package we.lala.winter.clipping.service;
 
 import we.lala.winter.domain.Clipping;
 
+import java.util.Optional;
+
 public interface ClippingService {
 
-    Clipping saveClipping(Clipping clipping);
+    Clipping createClipping(Clipping clipping);
+
+    Optional<Clipping> selectClippingById(Long id);
 }
