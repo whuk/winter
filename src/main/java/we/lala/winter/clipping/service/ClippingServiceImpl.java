@@ -43,4 +43,10 @@ public class ClippingServiceImpl implements ClippingService {
         modelMapper.map(clippingDto, getClipping);
         return Optional.of(clippingRepository.save(getClipping));
     }
+
+    @Override
+    public void deleteClippingById(Long id) {
+        clippingRepository.deleteById(id);
+        log.info("{}'s clipping is deleted!", id);
+    }
 }

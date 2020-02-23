@@ -130,4 +130,31 @@ class ClippingServiceTest {
         // Then
         assertFalse(modifiedOptionalClipping.isPresent());
     }
+
+    @Test
+    @DisplayName("ClippingService 를 이용한 저장 후 삭제 테스트")
+    void givenClipping_whenCreateClippingAndDeleteWithClippingService_thenReturnDeleteClipping() {
+        // Given
+        Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        Clipping clipping = Clipping.builder()
+                .textMessage("textMessage")
+                .checked(true)
+                .createDt(now)
+                .modifiedDt(now)
+                .clippedUrl("http://naver.com")
+                .numbering(1)
+                .build();
+
+        // When
+        Clipping savedClipping = clippingService.createClipping(clipping);
+        System.out.println(savedClipping.toString());
+        Long savedId = savedClipping.getId();
+
+        clippingService.deleteClippingById(savedId);
+
+        // Then
+        Optional<Clipping> optionalClipping = clippingService.selectClippingById(savedId);
+        assertFalse(optionalClipping.isPresent());
+    }
+
 }

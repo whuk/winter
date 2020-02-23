@@ -12,4 +12,6 @@ public interface ClippingService {
     Optional<Clipping> selectClippingById(Long id);
 
     Optional<Clipping> modifyClipping(Long savedId, ClippingDto clippingDto);
+
+    void deleteClippingById(Long id);
 }
