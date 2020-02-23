@@ -1,7 +1,9 @@
 package we.lala.winter.clipping.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import we.lala.winter.clipping.dto.ClippingDto;
 import we.lala.winter.clipping.repository.ClippingRepository;
 import we.lala.winter.domain.Clipping;
 
@@ -13,8 +15,11 @@ public class ClippingServiceImpl implements ClippingService {
 
     private final ClippingRepository clippingRepository;
 
-    public ClippingServiceImpl(ClippingRepository clippingRepository) {
+    private final ModelMapper modelMapper;
+
+    public ClippingServiceImpl(ClippingRepository clippingRepository, ModelMapper modelMapper) {
         this.clippingRepository = clippingRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -25,5 +30,17 @@ public class ClippingServiceImpl implements ClippingService {
     @Override
     public Optional<Clipping> selectClippingById(Long id) {
         return clippingRepository.findById(id);
+    }
+
+    @Override
+    public Optional<Clipping> modifyClipping(Long savedId, ClippingDto clippingDto) {
+        Optional<Clipping> optionalClipping = this.selectClippingById(savedId);
+        if (!optionalClipping.isPresent()) {
+            log.warn("Not exists clipping -> Id is {}", savedId);
+            return Optional.empty();
+        }
+        Clipping getClipping = optionalClipping.get();
+        modelMapper.map(clippingDto, getClipping);
+        return Optional.of(clippingRepository.save(getClipping));
     }
 }
