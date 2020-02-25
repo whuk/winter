@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
+import we.lala.winter.clipping.repository.ClippingRepository;
 import we.lala.winter.domain.Clipping;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,9 @@ class ClippingHandlerTest {
 
     @Autowired
     private WebTestClient webTestClient;
+
+    @Autowired
+    private ClippingRepository clippingRepository;
 
     @Test
     @DisplayName("Clipping webTestClient 를 이용한 post test")
@@ -40,6 +44,38 @@ class ClippingHandlerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(Mono.just(clipping), Clipping.class)
+                .exchange()
+                // Then
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("id").isNotEmpty()
+                .jsonPath("textMessage").isNotEmpty()
+                .jsonPath("textMessage").isEqualTo("textMessage");
+    }
+
+    @Test
+    @DisplayName("Clipping webTestClient 를 이용한 get test")
+    void givenClipping_whenGetWebTestClient_thenReturnOk() {
+        // Given
+        Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        Clipping clipping = Clipping.builder()
+                .textMessage("textMessage")
+                .checked(true)
+                .createDt(now)
+                .modifiedDt(now)
+                .clippedUrl("http://naver.com")
+                .numbering(1)
+                .build();
+
+        Clipping savedClipping = clippingRepository.save(clipping);
+        Long savedId = savedClipping.getId();
+
+        // When
+        webTestClient.get().uri("/clipping/" + savedId)
+                .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 // Then
                 .expectStatus()
