@@ -24,4 +24,3 @@ spring:
       settings:
         trace: false
         web-allow-others: false
-
