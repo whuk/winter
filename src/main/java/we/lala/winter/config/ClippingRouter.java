@@ -14,7 +14,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class ClippingRouter {
 
     @Bean
-    public RouterFunction<ServerResponse> routes(ClippingHandler clippingHandler) {
+    public RouterFunction<ServerResponse> routesClipping(ClippingHandler clippingHandler) {
         return route(POST("/clipping").and(accept(MediaType.APPLICATION_JSON)), clippingHandler::postClipping)
                 .andRoute(GET("/clipping/{id}").and(accept(MediaType.APPLICATION_JSON)), clippingHandler::getClipping);
     }
