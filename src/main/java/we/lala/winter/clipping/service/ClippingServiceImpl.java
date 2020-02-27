@@ -7,6 +7,9 @@ import we.lala.winter.clipping.dto.ClippingDto;
 import we.lala.winter.clipping.repository.ClippingRepository;
 import we.lala.winter.domain.Clipping;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -23,7 +26,12 @@ public class ClippingServiceImpl implements ClippingService {
     }
 
     @Override
-    public Clipping createClipping(Clipping clipping) {
+    public Clipping createClipping(ClippingDto clippingDto) {
+
+        Clipping clipping = modelMapper.map(clippingDto, Clipping.class);
+        Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        clipping.setCreateDt(now);
+        clipping.setModifiedDt(now);
         return clippingRepository.save(clipping);
     }
 

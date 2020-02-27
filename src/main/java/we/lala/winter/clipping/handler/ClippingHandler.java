@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+import we.lala.winter.clipping.dto.ClippingDto;
 import we.lala.winter.clipping.service.ClippingService;
 import we.lala.winter.domain.Clipping;
 
@@ -21,7 +22,7 @@ public class ClippingHandler {
     }
 
     public Mono<ServerResponse> postClipping(ServerRequest serverRequest) {
-        Mono<Clipping> clippingMono = serverRequest.bodyToMono(Clipping.class)
+        Mono<Clipping> clippingMono = serverRequest.bodyToMono(ClippingDto.class)
                 .flatMap(clipping -> Mono.just(clippingService.createClipping(clipping)));
 
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)

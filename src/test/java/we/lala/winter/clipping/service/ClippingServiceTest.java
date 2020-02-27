@@ -32,12 +32,9 @@ class ClippingServiceTest {
     @DisplayName("ClippingService 를 이용한 기본 생성 테스트")
     void givenClipping_whenCreateClippingWithClippingService_thenSaveClipping() {
         // Given
-        Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
-        Clipping clipping = Clipping.builder()
+        ClippingDto clipping = ClippingDto.builder()
                 .textMessage("textMessage")
                 .checked(true)
-                .createDt(now)
-                .modifiedDt(now)
                 .clippedUrl("http://naver.com")
                 .numbering(1)
                 .build();
@@ -54,12 +51,9 @@ class ClippingServiceTest {
     @DisplayName("ClippingService 를 이용한 저장 후 조회 테스트")
     void givenClipping_whenCreateClippingAndSelectWithClippingService_thenReturnClipping() {
         // Given
-        Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
-        Clipping clipping = Clipping.builder()
+        ClippingDto clipping = ClippingDto.builder()
                 .textMessage("textMessage")
                 .checked(true)
-                .createDt(now)
-                .modifiedDt(now)
                 .clippedUrl("http://naver.com")
                 .numbering(1)
                 .build();
@@ -78,12 +72,9 @@ class ClippingServiceTest {
     @DisplayName("ClippingService 를 이용한 저장 후 수정 테스트")
     void givenClipping_whenCreateClippingAndModifyWithClippingService_thenReturnClipping() {
         // Given
-        Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
-        Clipping clipping = Clipping.builder()
+        ClippingDto clipping = ClippingDto.builder()
                 .textMessage("textMessage")
                 .checked(true)
-                .createDt(now)
-                .modifiedDt(now)
                 .clippedUrl("http://naver.com")
                 .numbering(1)
                 .build();
@@ -135,12 +126,9 @@ class ClippingServiceTest {
     @DisplayName("ClippingService 를 이용한 저장 후 삭제 테스트")
     void givenClipping_whenCreateClippingAndDeleteWithClippingService_thenReturnDeleteClipping() {
         // Given
-        Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
-        Clipping clipping = Clipping.builder()
+        ClippingDto clipping = ClippingDto.builder()
                 .textMessage("textMessage")
                 .checked(true)
-                .createDt(now)
-                .modifiedDt(now)
                 .clippedUrl("http://naver.com")
                 .numbering(1)
                 .build();

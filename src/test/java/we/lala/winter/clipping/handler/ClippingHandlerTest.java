@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
+import we.lala.winter.clipping.dto.ClippingDto;
 import we.lala.winter.clipping.repository.ClippingRepository;
 import we.lala.winter.domain.Clipping;
 
@@ -29,12 +30,9 @@ class ClippingHandlerTest {
     @DisplayName("Clipping webTestClient 를 이용한 post test")
     void givenClipping_whenPostWebTestClient_thenReturnOk() {
         // Given
-        Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
-        Clipping clipping = Clipping.builder()
+        ClippingDto clipping = ClippingDto.builder()
                 .textMessage("textMessage")
                 .checked(true)
-                .createDt(now)
-                .modifiedDt(now)
                 .clippedUrl("http://naver.com")
                 .numbering(1)
                 .build();
@@ -43,7 +41,7 @@ class ClippingHandlerTest {
         webTestClient.post().uri("/clipping")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .body(Mono.just(clipping), Clipping.class)
+                .body(Mono.just(clipping), ClippingDto.class)
                 .exchange()
                 // Then
                 .expectStatus()

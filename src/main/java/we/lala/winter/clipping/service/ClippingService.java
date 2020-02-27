@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface ClippingService {
 
-    Clipping createClipping(Clipping clipping);
+    Clipping createClipping(ClippingDto clipping);
 
     Optional<Clipping> selectClippingById(Long id);
 
