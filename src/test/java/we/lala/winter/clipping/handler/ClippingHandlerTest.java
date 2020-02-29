@@ -1,7 +1,9 @@
 package we.lala.winter.clipping.handler;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -25,6 +27,14 @@ class ClippingHandlerTest {
 
     @Autowired
     private ClippingRepository clippingRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @BeforeEach
+    void beforeEach() {
+        clippingRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("Clipping webTestClient 를 이용한 post test")
@@ -84,5 +94,102 @@ class ClippingHandlerTest {
                 .jsonPath("id").isNotEmpty()
                 .jsonPath("textMessage").isNotEmpty()
                 .jsonPath("textMessage").isEqualTo("textMessage");
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 id 를 이용한 Clipping webTestClient 를 이용한 get test")
+    void givenIncorrectClippingId_whenGetWebTestClient_thenReturnOk() {
+        // Given
+        Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        Clipping clipping = Clipping.builder()
+                .textMessage("textMessage")
+                .checked(true)
+                .createDt(now)
+                .modifiedDt(now)
+                .clippedUrl("http://naver.com")
+                .numbering(1)
+                .build();
+
+        Clipping savedClipping = clippingRepository.save(clipping);
+        Long savedId = savedClipping.getId() * -1;
+
+        // When
+        webTestClient.get().uri("/clipping/" + savedId)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                // Then
+                .expectStatus()
+                .isBadRequest()
+                .expectHeader();
+    }
+
+    @Test
+    @DisplayName("Clipping webTestClient 를 이용한 put test")
+    void givenClipping_whenPutWebTestClient_thenReturnOk() {
+        // Given
+        Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        Clipping clipping = Clipping.builder()
+                .textMessage("textMessage")
+                .checked(true)
+                .createDt(now)
+                .modifiedDt(now)
+                .clippedUrl("http://naver.com")
+                .numbering(1)
+                .build();
+
+        Clipping savedClipping = clippingRepository.save(clipping);
+        Long savedId = savedClipping.getId();
+        ClippingDto modifiedClipping = modelMapper.map(savedClipping, ClippingDto.class);
+        modifiedClipping.setTextMessage("modified text message");
+        modifiedClipping.setClippedUrl("https://daum.net");
+
+        // When
+        webTestClient.put().uri("/clipping/" + savedId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(modifiedClipping), ClippingDto.class)
+                .exchange()
+                // Then
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("id").isNotEmpty()
+                .jsonPath("textMessage").isNotEmpty()
+                .jsonPath("textMessage").isEqualTo("modified text message")
+                .jsonPath("clippedUrl").isNotEmpty()
+                .jsonPath("clippedUrl").isEqualTo("https://daum.net");
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 id 를 이용한 Clipping webTestClient 를 이용한 put test")
+    void givenIncorrectClippingId_whenPutWebTestClient_thenReturnOk() {
+        // Given
+        Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        Clipping clipping = Clipping.builder()
+                .textMessage("textMessage")
+                .checked(true)
+                .createDt(now)
+                .modifiedDt(now)
+                .clippedUrl("http://naver.com")
+                .numbering(1)
+                .build();
+
+        Clipping savedClipping = clippingRepository.save(clipping);
+        Long savedId = savedClipping.getId() * -1;
+        ClippingDto modifiedClipping = modelMapper.map(savedClipping, ClippingDto.class);
+        modifiedClipping.setTextMessage("modified text message");
+        modifiedClipping.setClippedUrl("https://daum.net");
+
+        // When
+        webTestClient.put().uri("/clipping/" + savedId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(modifiedClipping), ClippingDto.class)
+                .exchange()
+                // Then
+                .expectStatus()
+                .isBadRequest();
     }
 }
