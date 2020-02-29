@@ -27,7 +27,6 @@ public class ClippingServiceImpl implements ClippingService {
 
     @Override
     public Clipping createClipping(ClippingDto clippingDto) {
-
         Clipping clipping = modelMapper.map(clippingDto, Clipping.class);
         Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
         clipping.setCreateDt(now);
@@ -49,6 +48,8 @@ public class ClippingServiceImpl implements ClippingService {
         }
         Clipping getClipping = optionalClipping.get();
         modelMapper.map(clippingDto, getClipping);
+        Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        getClipping.setModifiedDt(now);
         return Optional.of(clippingRepository.save(getClipping));
     }
 
