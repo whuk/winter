@@ -12,8 +12,7 @@ import we.lala.winter.domain.Clipping;
 
 import java.util.Optional;
 
-import static org.springframework.web.reactive.function.server.ServerResponse.badRequest;
-import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+import static org.springframework.web.reactive.function.server.ServerResponse.*;
 
 @Component
 public class ClippingHandler {
@@ -62,5 +61,21 @@ public class ClippingHandler {
         }
 
         return ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(optionalClipping.get()), Clipping.class);
+    }
+
+    public Mono<ServerResponse> deleteClipping(ServerRequest serverRequest) {
+        String pathVariable = serverRequest.pathVariable("id");
+
+        if (!NumberUtils.isCreatable(pathVariable)) {
+            return badRequest().build();
+        }
+
+        Optional<Clipping> optionalClipping = clippingService.selectClippingById(Long.parseLong(pathVariable));
+
+        if (!optionalClipping.isPresent()) {
+            return badRequest().build();
+        }
+        clippingService.deleteClippingById(Long.parseLong(pathVariable));
+        return noContent().build();
     }
 }

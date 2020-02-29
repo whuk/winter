@@ -192,4 +192,83 @@ class ClippingHandlerTest {
                 .expectStatus()
                 .isBadRequest();
     }
+
+
+    @Test
+    @DisplayName("Clipping webTestClient 를 이용한 삭제 test")
+    void givenClipping_whenDeleteWebTestClient_thenReturnOk() {
+        // Given
+        Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        Clipping clipping = Clipping.builder()
+                .textMessage("textMessage")
+                .checked(true)
+                .createDt(now)
+                .modifiedDt(now)
+                .clippedUrl("http://naver.com")
+                .numbering(1)
+                .build();
+
+        Clipping savedClipping = clippingRepository.save(clipping);
+        Long savedId = savedClipping.getId();
+
+        // When
+        webTestClient.delete().uri("/clipping/" + savedId)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                // Then
+                .expectStatus()
+                .isNoContent();
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 id 를 이용한 Clipping webTestClient 를 이용한 삭제 test")
+    void givenIncorrectClipping_whenDeleteWebTestClient_thenReturnOk() {
+        // Given
+        Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        Clipping clipping = Clipping.builder()
+                .textMessage("textMessage")
+                .checked(true)
+                .createDt(now)
+                .modifiedDt(now)
+                .clippedUrl("http://naver.com")
+                .numbering(1)
+                .build();
+
+        Clipping savedClipping = clippingRepository.save(clipping);
+        Long savedId = savedClipping.getId() * -1;
+
+        // When
+        webTestClient.delete().uri("/clipping/" + savedId)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                // Then
+                .expectStatus()
+                .isBadRequest();
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 문자 id 를 이용한 Clipping webTestClient 를 이용한 삭제 test")
+    void givenIncorrectStringIdClipping_whenDeleteWebTestClient_thenReturnOk() {
+        // Given
+        Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        Clipping clipping = Clipping.builder()
+                .textMessage("textMessage")
+                .checked(true)
+                .createDt(now)
+                .modifiedDt(now)
+                .clippedUrl("http://naver.com")
+                .numbering(1)
+                .build();
+
+        Clipping savedClipping = clippingRepository.save(clipping);
+        String savedId = "abc";
+
+        // When
+        webTestClient.delete().uri("/clipping/" + savedId)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                // Then
+                .expectStatus()
+                .isBadRequest();
+    }
 }
