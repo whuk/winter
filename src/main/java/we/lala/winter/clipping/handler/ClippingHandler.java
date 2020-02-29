@@ -13,6 +13,7 @@ import we.lala.winter.domain.Clipping;
 import java.util.Optional;
 
 import static org.springframework.web.reactive.function.server.ServerResponse.badRequest;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Component
 public class ClippingHandler {
@@ -24,11 +25,10 @@ public class ClippingHandler {
     }
 
     public Mono<ServerResponse> postClipping(ServerRequest serverRequest) {
-        Mono<Clipping> clippingMono = serverRequest.bodyToMono(ClippingDto.class)
-                .flatMap(clippingDto -> Mono.just(clippingService.createClipping(clippingDto)));
-
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                .body(clippingMono, Clipping.class);
+        return serverRequest.bodyToMono(ClippingDto.class)
+                .flatMap(clippingDto -> Mono.just(clippingService.createClipping(clippingDto)))
+                .flatMap(clipping -> ok().contentType(MediaType.APPLICATION_JSON)
+                        .body(Mono.just(clipping), Clipping.class));
     }
 
     public Mono<ServerResponse> putClipping(ServerRequest serverRequest) {
@@ -42,9 +42,9 @@ public class ClippingHandler {
                 .flatMap(clippingDto -> Mono.just(clippingService.modifyClipping(Long.parseLong(pathVariable), clippingDto)))
                 .flatMap(clippingOptional -> {
                     if (!clippingOptional.isPresent()) {
-                        return ServerResponse.badRequest().build();
+                        return badRequest().build();
                     }
-                    return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(clippingOptional.get()), Clipping.class);
+                    return ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(clippingOptional.get()), Clipping.class);
                 });
     }
 
@@ -61,6 +61,6 @@ public class ClippingHandler {
             return badRequest().build();
         }
 
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(optionalClipping.get()), Clipping.class);
+        return ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(optionalClipping.get()), Clipping.class);
     }
 }
