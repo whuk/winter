@@ -41,6 +41,7 @@ public class SampleHandler {
     public Mono<ServerResponse> admin(ServerRequest serverRequest) {
         Map<String, String> modelMap = new HashMap<>();
         return serverRequest.principal()
+                .switchIfEmpty(Mono.error(CredentialException::new))
                 .map(Principal::getName)
                 .flatMap(username -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
