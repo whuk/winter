@@ -1,6 +1,5 @@
 package we.lala.winter.sample.handler;
 
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -32,10 +31,11 @@ public class SampleHandler {
         return serverRequest.principal()
                 .switchIfEmpty(Mono.error(CredentialException::new))
                 .map(Principal::getName)
-                .flatMap(username -> ServerResponse.ok()
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .render("dashboard", modelMap.put("message", "Hello " + username)))
-                ;
+                .flatMap(username -> {
+                    modelMap.put("message", "Hello " + username);
+                    return ServerResponse.ok()
+                            .render("dashboard", modelMap);
+                });
     }
 
     public Mono<ServerResponse> admin(ServerRequest serverRequest) {
@@ -43,8 +43,10 @@ public class SampleHandler {
         return serverRequest.principal()
                 .switchIfEmpty(Mono.error(CredentialException::new))
                 .map(Principal::getName)
-                .flatMap(username -> ServerResponse.ok()
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .render("dashboard", modelMap.put("message", "Hello " + username)));
+                .flatMap(username -> {
+                    modelMap.put("message", "Hello " + username);
+                    return ServerResponse.ok()
+                            .render("admin", modelMap);
+                });
     }
 }
