@@ -1,5 +1,6 @@
 package we.lala.winter.sample.handler;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -9,12 +10,19 @@ import javax.security.auth.login.CredentialException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
+@Slf4j
 public class SampleHandler {
 
     public Mono<ServerResponse> getSample(ServerRequest serverRequest) {
         Map<String, String> modelMap = new HashMap<>();
+        Optional<? extends Principal> principal = serverRequest.principal().blockOptional();
+        principal.ifPresent(p -> {
+            log.info("Principal is {}", p.getName());
+            modelMap.put("message", "Hello Spring Security " + p.getName());
+        });
         modelMap.put("message", "Hello Spring Security");
 
         return ServerResponse.ok().render("index", modelMap);
