@@ -1,5 +1,6 @@
 package we.lala.winter.account;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import we.lala.winter.domain.Account;
 
@@ -7,12 +8,15 @@ import we.lala.winter.domain.Account;
 public class AccountService {
 
     private final AccountRepository accountRepository;
-    public AccountService(AccountRepository accountRepository) {
+    private final PasswordEncoder passwordEncoder;
+
+    public AccountService(AccountRepository accountRepository, PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Account createNew(Account account) {
-        account.encodePassword();
+        account.encodePassword(passwordEncoder);
         return this.accountRepository.save(account);
     }
 }
