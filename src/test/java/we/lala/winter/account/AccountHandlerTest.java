@@ -8,8 +8,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockUser;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class AccountHandlerTest {
@@ -18,6 +16,7 @@ class AccountHandlerTest {
     private WebTestClient webTestClient;
 
     @Test
+    @WithMockUser
     @DisplayName("index 페이지로 접근하면 200 ok 가 리턴된다.")
     void index_anonymous() {
         webTestClient.get().uri("/")
