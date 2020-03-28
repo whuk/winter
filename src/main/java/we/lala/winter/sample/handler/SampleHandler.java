@@ -18,13 +18,7 @@ public class SampleHandler {
 
     public Mono<ServerResponse> getSample(ServerRequest serverRequest) {
         Map<String, String> modelMap = new HashMap<>();
-        Optional<? extends Principal> principal = serverRequest.principal().blockOptional();
-        principal.ifPresent(p -> {
-            log.info("Principal is {}", p.getName());
-            modelMap.put("message", "Hello Spring Security " + p.getName());
-        });
         modelMap.put("message", "Hello Spring Security");
-
         return ServerResponse.ok().render("index", modelMap);
     }
 
@@ -55,6 +49,18 @@ public class SampleHandler {
                     modelMap.put("message", "Hello " + username);
                     return ServerResponse.ok()
                             .render("admin", modelMap);
+                });
+    }
+
+    public Mono<ServerResponse> user(ServerRequest serverRequest) {
+        Map<String, String> modelMap = new HashMap<>();
+        return serverRequest.principal()
+                .switchIfEmpty(Mono.error(CredentialException::new))
+                .map(Principal::getName)
+                .flatMap(username -> {
+                    modelMap.put("message", "Hello " + username);
+                    return ServerResponse.ok()
+                            .render("user", modelMap);
                 });
     }
 }

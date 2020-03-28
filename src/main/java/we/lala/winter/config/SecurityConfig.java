@@ -2,6 +2,8 @@ package we.lala.winter.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
@@ -28,6 +30,8 @@ public class SecurityConfig {
         return http.authorizeExchange()
                 .pathMatchers("/", "/info", "/account/**").permitAll()
                 .pathMatchers("/admin").hasRole("ADMIN")
+                .pathMatchers("/user")
+                .access(new CustomReactiveAuthorizationManager<>("USER", roleHierarchy()))
                 .anyExchange().authenticated()
                 .and()
                 .formLogin()
@@ -35,6 +39,12 @@ public class SecurityConfig {
                 .httpBasic()
                 .and()
                 .build();
+    }
+
+    private RoleHierarchy roleHierarchy() {
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER");
+        return roleHierarchy;
     }
 
     @Bean

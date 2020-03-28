@@ -20,6 +20,7 @@ public class SampleRouter {
         return route(GET("/").and(accept(MediaType.APPLICATION_JSON)), sampleHandler::getSample)
                 .andRoute(GET("info").and(accept(MediaType.APPLICATION_JSON)), sampleHandler::info)
                 .andRoute(GET("/dashboard").and(accept(MediaType.APPLICATION_JSON)), sampleHandler::dashboard)
-                .andRoute(GET("/admin").and(accept(MediaType.APPLICATION_JSON)), sampleHandler::admin);
+                .andRoute(GET("/admin").and(accept(MediaType.APPLICATION_JSON)), sampleHandler::admin)
+                .andRoute(GET("/user").and(accept(MediaType.APPLICATION_JSON)), sampleHandler::user);
     }
 }
