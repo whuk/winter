@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
+import we.lala.winter.account.WithRyanUser;
 import we.lala.winter.clipping.dto.ClippingDto;
 import we.lala.winter.clipping.repository.ClippingRepository;
 import we.lala.winter.domain.Clipping;
@@ -37,6 +38,7 @@ class ClippingHandlerTest {
     }
 
     @Test
+    @WithRyanUser
     @DisplayName("Clipping webTestClient 를 이용한 post test")
     void givenClipping_whenPostWebTestClient_thenReturnOk() {
         // Given
@@ -65,6 +67,7 @@ class ClippingHandlerTest {
     }
 
     @Test
+    @WithRyanUser
     @DisplayName("Clipping webTestClient 를 이용한 get test")
     void givenClipping_whenGetWebTestClient_thenReturnOk() {
         // Given
@@ -97,6 +100,7 @@ class ClippingHandlerTest {
     }
 
     @Test
+    @WithRyanUser
     @DisplayName("유효하지 않은 id 를 이용한 Clipping webTestClient 를 이용한 get test")
     void givenIncorrectClippingId_whenGetWebTestClient_thenReturnOk() {
         // Given
@@ -124,6 +128,7 @@ class ClippingHandlerTest {
     }
 
     @Test
+    @WithRyanUser
     @DisplayName("Clipping webTestClient 를 이용한 put test")
     void givenClipping_whenPutWebTestClient_thenReturnOk() {
         // Given
@@ -163,6 +168,7 @@ class ClippingHandlerTest {
     }
 
     @Test
+    @WithRyanUser
     @DisplayName("유효하지 않은 id 를 이용한 Clipping webTestClient 를 이용한 put test")
     void givenIncorrectClippingId_whenPutWebTestClient_thenReturnOk() {
         // Given
@@ -195,6 +201,7 @@ class ClippingHandlerTest {
 
 
     @Test
+    @WithRyanUser
     @DisplayName("Clipping webTestClient 를 이용한 삭제 test")
     void givenClipping_whenDeleteWebTestClient_thenReturnOk() {
         // Given
@@ -221,6 +228,7 @@ class ClippingHandlerTest {
     }
 
     @Test
+    @WithRyanUser
     @DisplayName("유효하지 않은 id 를 이용한 Clipping webTestClient 를 이용한 삭제 test")
     void givenIncorrectClipping_whenDeleteWebTestClient_thenReturnOk() {
         // Given
@@ -247,6 +255,7 @@ class ClippingHandlerTest {
     }
 
     @Test
+    @WithRyanUser
     @DisplayName("유효하지 않은 문자 id 를 이용한 Clipping webTestClient 를 이용한 삭제 test")
     void givenIncorrectStringIdClipping_whenDeleteWebTestClient_thenReturnOk() {
         // Given
