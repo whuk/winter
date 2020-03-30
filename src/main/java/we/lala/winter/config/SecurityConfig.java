@@ -1,5 +1,6 @@
 package we.lala.winter.config;
 
+import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -28,6 +29,7 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http.authorizeExchange()
+                .pathMatchers("/favicon.ico").permitAll()
                 .pathMatchers("/", "/info", "/account/**").permitAll()
                 .pathMatchers("/admin").hasRole("ADMIN")
                 .pathMatchers("/user")
