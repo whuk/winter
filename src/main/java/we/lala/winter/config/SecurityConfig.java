@@ -27,7 +27,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        return http.csrf().disable()
+        return http
+//                .csrf().disable()
                 .authorizeExchange()
                 .pathMatchers("/", "/info", "/account/**", "/signup").permitAll()
                 .pathMatchers("/admin").hasRole("ADMIN")

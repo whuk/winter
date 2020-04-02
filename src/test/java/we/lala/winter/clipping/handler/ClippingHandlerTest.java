@@ -6,10 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
+import we.lala.winter.WinterApplication;
 import we.lala.winter.account.WithRyanUser;
 import we.lala.winter.clipping.dto.ClippingDto;
 import we.lala.winter.clipping.repository.ClippingRepository;
@@ -19,11 +22,18 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.springSecurity;
+import static org.springframework.web.reactive.function.client.ExchangeFilterFunctions.basicAuthentication;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@ContextConfiguration(classes = WinterApplication.class)
 class ClippingHandlerTest {
 
     @Autowired
+    private ApplicationContext applicationContext;
+
     private WebTestClient webTestClient;
 
     @Autowired
@@ -35,6 +45,12 @@ class ClippingHandlerTest {
     @BeforeEach
     void beforeEach() {
         clippingRepository.deleteAll();
+
+        webTestClient = WebTestClient
+                .bindToApplicationContext(this.applicationContext)
+                .apply(springSecurity())
+                .configureClient()
+                .build();
     }
 
     @Test
@@ -50,7 +66,9 @@ class ClippingHandlerTest {
                 .build();
 
         // When
-        webTestClient.post().uri("/clipping")
+        webTestClient
+                .mutateWith(csrf())
+                .post().uri("/clipping")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(Mono.just(clipping), ClippingDto.class)
@@ -149,7 +167,9 @@ class ClippingHandlerTest {
         modifiedClipping.setClippedUrl("https://daum.net");
 
         // When
-        webTestClient.put().uri("/clipping/" + savedId)
+        webTestClient
+                .mutateWith(csrf())
+                .put().uri("/clipping/" + savedId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(Mono.just(modifiedClipping), ClippingDto.class)
@@ -189,7 +209,9 @@ class ClippingHandlerTest {
         modifiedClipping.setClippedUrl("https://daum.net");
 
         // When
-        webTestClient.put().uri("/clipping/" + savedId)
+        webTestClient
+                .mutateWith(csrf())
+                .put().uri("/clipping/" + savedId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(Mono.just(modifiedClipping), ClippingDto.class)
@@ -219,7 +241,9 @@ class ClippingHandlerTest {
         Long savedId = savedClipping.getId();
 
         // When
-        webTestClient.delete().uri("/clipping/" + savedId)
+        webTestClient
+                .mutateWith(csrf())
+                .delete().uri("/clipping/" + savedId)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 // Then
@@ -246,7 +270,9 @@ class ClippingHandlerTest {
         Long savedId = savedClipping.getId() * -1;
 
         // When
-        webTestClient.delete().uri("/clipping/" + savedId)
+        webTestClient
+                .mutateWith(csrf())
+                .delete().uri("/clipping/" + savedId)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 // Then
@@ -273,7 +299,9 @@ class ClippingHandlerTest {
         String savedId = "abc";
 
         // When
-        webTestClient.delete().uri("/clipping/" + savedId)
+        webTestClient
+                .mutateWith(csrf())
+                .delete().uri("/clipping/" + savedId)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 // Then
