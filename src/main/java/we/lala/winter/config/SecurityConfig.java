@@ -11,9 +11,13 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler;
+import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
 import reactor.core.publisher.Mono;
 import we.lala.winter.account.AccountRepository;
 import we.lala.winter.domain.Account;
+
+import java.net.URI;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -40,7 +44,16 @@ public class SecurityConfig {
                 .and()
                 .httpBasic()
                 .and()
+                .logout().logoutSuccessHandler(logoutSuccessHandler("/"))
+                .and()
                 .build();
+    }
+
+    private ServerLogoutSuccessHandler logoutSuccessHandler(String url) {
+        RedirectServerLogoutSuccessHandler redirectServerLogoutSuccessHandler
+                = new RedirectServerLogoutSuccessHandler();
+        redirectServerLogoutSuccessHandler.setLogoutSuccessUrl(URI.create(url));
+        return redirectServerLogoutSuccessHandler;
     }
 
     private RoleHierarchy roleHierarchy() {
