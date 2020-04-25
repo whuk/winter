@@ -10,7 +10,6 @@ import javax.security.auth.login.CredentialException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 @Slf4j
@@ -61,6 +60,18 @@ public class SampleHandler {
                     modelMap.put("message", "Hello " + username);
                     return ServerResponse.ok()
                             .render("user", modelMap);
+                });
+    }
+
+    public Mono<ServerResponse> forbidden(ServerRequest serverRequest) {
+        Map<String, String> modelMap = new HashMap<>();
+        return serverRequest.principal()
+                .switchIfEmpty(Mono.error(CredentialException::new))
+                .map(Principal::getName)
+                .flatMap(username -> {
+                    modelMap.put("message", username + " can not access this page!! - Forbidden");
+                    return ServerResponse.ok()
+                            .render("forbidden", modelMap);
                 });
     }
 }

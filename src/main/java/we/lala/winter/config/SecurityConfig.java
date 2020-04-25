@@ -1,7 +1,12 @@
 package we.lala.winter.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -13,14 +18,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
+import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import we.lala.winter.account.AccountRepository;
 import we.lala.winter.domain.Account;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 @Configuration
 @EnableWebFluxSecurity
+@Slf4j
 public class SecurityConfig {
 
     private final AccountRepository accountRepository;
@@ -45,6 +54,32 @@ public class SecurityConfig {
                 .httpBasic()
                 .and()
                 .logout().logoutSuccessHandler(logoutSuccessHandler("/"))
+                .and()
+                .exceptionHandling().accessDeniedHandler(new ServerAccessDeniedHandler() {
+                    @Override
+                    public Mono<Void> handle(ServerWebExchange serverWebExchange, AccessDeniedException e) {
+                        ServerHttpRequest request = serverWebExchange.getRequest();
+                        URI origin = request.getURI();
+                        URI target = null;
+                        try {
+                            target = new URI(
+                                    "http",
+                                    origin.getUserInfo(),
+                                    origin.getHost(),
+                                    origin.getPort(),
+                                    "/forbidden",
+                                    origin.getQuery(),
+                                    origin.getFragment()
+                            );
+                        } catch (URISyntaxException uriSyntaxException) {
+                            log.error("### Forbidden address if wrong!!");
+                        }
+                        ServerHttpResponse response = serverWebExchange.getResponse();
+                        response.getHeaders().setLocation(target);
+                        response.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
+                        return Mono.empty();
+                    }
+                })
                 .and()
                 .build();
     }

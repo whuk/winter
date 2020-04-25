@@ -21,6 +21,7 @@ public class SampleRouter {
                 .andRoute(GET("info").and(accept(MediaType.APPLICATION_JSON)), sampleHandler::info)
                 .andRoute(GET("/dashboard").and(accept(MediaType.APPLICATION_JSON)), sampleHandler::dashboard)
                 .andRoute(GET("/admin").and(accept(MediaType.APPLICATION_JSON)), sampleHandler::admin)
-                .andRoute(GET("/user").and(accept(MediaType.APPLICATION_JSON)), sampleHandler::user);
+                .andRoute(GET("/user").and(accept(MediaType.APPLICATION_JSON)), sampleHandler::user)
+                .andRoute(GET("/forbidden").and(accept(MediaType.APPLICATION_JSON)), sampleHandler::forbidden);
     }
 }
