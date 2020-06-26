@@ -52,31 +52,31 @@ public class SecurityConfig {
                 .and()
                 .logout().logoutSuccessHandler(logoutSuccessHandler("/"))
                 .and()
-                .exceptionHandling().accessDeniedHandler((serverWebExchange, e) -> {
-                    ServerHttpRequest request = serverWebExchange.getRequest();
-                    ServerHttpResponse response = serverWebExchange.getResponse();
-                    response.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
-
-                    URI origin = request.getURI();
-                    URI target = null;
-                    try {
-                        target = new URI(
-                                "http",
-                                origin.getUserInfo(),
-                                origin.getHost(),
-                                origin.getPort(),
-                                "/forbidden",
-                                origin.getQuery(),
-                                origin.getFragment()
-                        );
-                    } catch (URISyntaxException uriSyntaxException) {
-                        log.error("### Forbidden address if wrong!!");
-                        response.getHeaders().setLocation(URI.create("/"));
-                    }
-                    response.getHeaders().setLocation(target);
-                    return Mono.empty();
-                })
-                .and()
+//                .exceptionHandling().accessDeniedHandler((serverWebExchange, e) -> {
+//                    ServerHttpRequest request = serverWebExchange.getRequest();
+//                    ServerHttpResponse response = serverWebExchange.getResponse();
+//                    response.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
+//
+//                    URI origin = request.getURI();
+//                    URI target = null;
+//                    try {
+//                        target = new URI(
+//                                "http",
+//                                origin.getUserInfo(),
+//                                origin.getHost(),
+//                                origin.getPort(),
+//                                "/forbidden",
+//                                origin.getQuery(),
+//                                origin.getFragment()
+//                        );
+//                    } catch (URISyntaxException uriSyntaxException) {
+//                        log.error("### Forbidden address if wrong!!");
+//                        response.getHeaders().setLocation(URI.create("/"));
+//                    }
+//                    response.getHeaders().setLocation(target);
+//                    return Mono.empty();
+//                })
+//                .and()
                 .build();
     }
 
